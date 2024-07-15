@@ -7,34 +7,50 @@ import random
 router = APIRouter()
 
 categories = {
-    "animals": 27,
-    "sports": 21,
-    "geography": 22,
-    "history": 23,
-    "art": 25,
-    "books": 10,
-    "television": 14,
-    "film": 11
+    "General Knowledge": 9,
+    "Entertainment: Books": 10,
+    "Entertainment: Film": 11,
+    "Entertainment: Music": 12,
+    "Entertainment: Musicals & Theatres": 13,
+    "Entertainment: Television": 14,
+    "Entertainment: Video Games": 15,
+    "Entertainment: Board Games": 16,
+    "Science & Nature": 17,
+    "Science: Computers": 18,
+    "Science: Mathematics": 19,
+    "Mythology": 20,
+    "Sports": 21,
+    "Geography": 22,
+    "History": 23,
+    "Politics": 24,
+    "Art": 25,
+    "Celebrities": 26,
+    "Animals": 27,
+    "Vehicles": 28,
+    "Entertainment: Comics": 29,
+    "Science: Gadgets": 30,
+    "Entertainment: Japanese Anime & Manga": 31,
+    "Entertainment: Cartoon & Animations": 32
 }
 
 TRIVIA_API_URL = "https://opentdb.com/api.php?amount=1&type=boolean&category="
 
 @router.post("/trivia/start")
 async def inser_user(user: User):
-    if data_functions.get_user(user.username) is None:
-        data_functions.insert_user(user.username)
+    if data_functions.get_user(user.user_id) is None:
+        data_functions.insert_user(user.user_id)
         return {status.HTTP_201_CREATED: "User created"}
     else:
         return {status.HTTP_409_CONFLICT: "User already exists"}
 
 @router.post("/trivia/score")
 async def inser_user(user: User):
-    data_functions.update_user_score(user.username)
+    data_functions.update_user_score(user.user_id)
     return {status.HTTP_200_OK: "User score incremented"}
 
 @router.get("/trivia/score")
 async def inser_user(user: User):
-    result = data_functions.get_user(user.username)
+    result = data_functions.get_user(user.user_id)
     return {"HTTP status code": status.HTTP_200_OK, "user": result}
 
 
