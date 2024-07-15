@@ -21,18 +21,21 @@ TRIVIA_API_URL = "https://opentdb.com/api.php?amount=1&type=boolean&category="
 
 @router.post("/trivia/start")
 async def inser_user(user: User):
-    data_functions.insert_user(user.username)
-    return {status.HTTP_201_CREATED: "User created"}
+    if data_functions.get_user(user.username) is None:
+        data_functions.insert_user(user.username)
+        return {status.HTTP_201_CREATED: "User created"}
+    else:
+        return {status.HTTP_409_CONFLICT: "User already exists"}
 
 @router.post("/trivia/score")
 async def inser_user(user: User):
     data_functions.update_user_score(user.username)
-    return {status.HTTP_200_OK: "User score increased"}
+    return {status.HTTP_200_OK: "User score incremented"}
 
 @router.get("/trivia/score")
 async def inser_user(user: User):
     result = data_functions.get_user(user.username)
-    return {status.HTTP_200_OK: "User score increased", "user": result}
+    return {"HTTP status code": status.HTTP_200_OK, "user": result}
 
 
 @router.get("/trivia/{category}")
