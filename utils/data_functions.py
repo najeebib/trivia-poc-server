@@ -13,11 +13,11 @@ def insert_user(username: str):
                   'Document_ID': str(response.inserted_id)}
     return output
 
-def update_user_score(username: str, score: int):
+def update_user_score(username: str):
     query = {'username': username}
-    new_values = {"$set": {'score': score}}
+    update = {"$inc": {'score': 1}}
     
-    response = mongo_api.users_collection.update_one(query, new_values)
+    response = mongo_api.users_collection.update_one(query, update)
     if response.matched_count > 0:
         output = {'Status': 'Successfully Updated',
                   'Matched_Count': response.matched_count,
