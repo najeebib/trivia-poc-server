@@ -3,7 +3,8 @@ from models.user import User
 import utils.data_functions as data_functions
 import requests
 import random
-
+from data.database import MongoAPI
+mongo_api = MongoAPI()
 router = APIRouter()
 
 categories = {
@@ -37,20 +38,20 @@ TRIVIA_API_URL = "https://opentdb.com/api.php?amount=1&type=boolean&category="
 
 @router.post("/trivia/start")
 async def inser_user(user: User):
-    if data_functions.get_user(user.user_id) is None:
-        data_functions.insert_user(user.user_id)
+    if data_functions.get_user(user.user_id, mongo_api) is None:
+        data_functions.insert_user(user.user_id, mongo_api)
         return {status.HTTP_201_CREATED: "User created"}
     else:
         return {status.HTTP_409_CONFLICT: "User already exists"}
 
 @router.post("/trivia/score")
 async def inser_user(user: User):
-    data_functions.update_user_score(user.user_id)
+    data_functions.update_user_score(user.user_id, mongo_api)
     return {status.HTTP_200_OK: "User score incremented"}
 
 @router.get("/trivia/score")
 async def inser_user(user: User):
-    result = data_functions.get_user(user.user_id)
+    result = data_functions.get_user(user.user_id, mongo_api)
     return {"HTTP status code": status.HTTP_200_OK, "user": result}
 
 
