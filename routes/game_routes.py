@@ -57,7 +57,7 @@ async def inser_user(user: User):
 @router.get("/trivia/{category}")
 async def get_trivia(category: str):
     category_id = 0
-    if category == "random":
+    if category == "Random":
         category_id = random.choice(list(categories.values()))
     elif category in categories:  # Check if the category is valid
         category_id = categories[category]
