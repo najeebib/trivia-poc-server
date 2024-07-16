@@ -37,22 +37,29 @@ categories = {
 TRIVIA_API_URL = "https://opentdb.com/api.php?amount=1&type=boolean&category="
 
 @router.post("/trivia/start")
-async def inser_user(user: User):
+async def insert_user(user: User):
     if data_functions.get_user(user.user_id, mongo_api) is None:
-        data_functions.insert_user(user.user_id, mongo_api)
-        return {status.HTTP_201_CREATED: "User created"}
+        result = data_functions.insert_user(user.user_id, mongo_api)
+        if result["Status"] == "Successfully Inserted":
+            return {status.HTTP_201_CREATED: "User created"}
+        else:
+            raise HTTPException(status_code=500, detail="Server error")
     else:
-        return {status.HTTP_409_CONFLICT: "User already exists"}
+        raise HTTPException(status_code=409, detail="User already exists")
 
 @router.post("/trivia/score")
-async def inser_user(user: User):
-    data_functions.update_user_score(user.user_id, mongo_api)
-    return {status.HTTP_200_OK: "User score incremented"}
+async def increment_score(user: User):
+    result = data_functions.update_user_score(user.user_id, mongo_api)
+    if result["Status"] == "Successfully Updated" and result["Matched_Count"] == 1:
+        return {status.HTTP_200_OK: "User score incremented"}
+    raise HTTPException(status_code=404, detail="No user with this ID exists")
 
 @router.get("/trivia/score")
-async def inser_user(user: User):
+async def get_user(user: User):
     result = data_functions.get_user(user.user_id, mongo_api)
-    return {"HTTP status code": status.HTTP_200_OK, "user": result}
+    if result:
+        return {"HTTP status code": status.HTTP_200_OK, "user": result}
+    raise HTTPException(status_code=404, detail="No user with this ID exists")
 
 
 @router.get("/trivia/{category}")
